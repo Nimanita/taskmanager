@@ -16,11 +16,12 @@ const signup = async (req, res) => {
 const login = async (req, res) => {
   const { username, password } = req.body;
   try {
+    console.log(username , password)
     const user = await User.findOne({ username });
     if (!user || !(await user.comparePassword(password))) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '24h' });
     res.json({ token });
   } catch (error) {
     res.status(400).json({ message: 'Error logging in', error });
