@@ -29,6 +29,7 @@ export default function NewTask() {
     category: '',
     dueDate: null
   });
+  const API_URL = import.meta.env.VITE_APP_API_URL || 'https://taskmanager-tcy7.onrender.com';
 
   useEffect(() => {
     if (open) {
@@ -39,7 +40,7 @@ export default function NewTask() {
   const fetchCategories = async () => {
     try {
       const token = sessionStorage.getItem('token');
-      const response = await axios.get(`${import.meta.env.VITE_APP_API_URL}/api/categories/`, {
+      const response = await axios.get(`${API_URL}/api/categories/`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -55,7 +56,7 @@ export default function NewTask() {
     try {
       const token = sessionStorage.getItem('token');
       await axios.post(
-        `${import.meta.env.VITE_APP_API_URL}/api/categories/`,
+        `${API_URL}/api/categories/`,
         { name: newCategory },
         {
           headers: {

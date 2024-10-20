@@ -48,10 +48,12 @@ export default function AuthRegister() {
   };
 
   const navigate = useNavigate();
+  const API_URL = import.meta.env.VITE_APP_API_URL || 'https://taskmanager-tcy7.onrender.com';
+
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
     console.log("inside login" , values)
     try {
-      const response = await axios.post("https://taskmanager-tcy7.onrender.com/api/auth/signup", {
+      const response = await axios.post(`${API_URL}/api/auth/signup`, {
         username: values.firstname,
         email : values.email,
         password: values.password,

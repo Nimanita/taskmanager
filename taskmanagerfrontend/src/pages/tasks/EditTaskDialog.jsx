@@ -24,6 +24,8 @@ const EditTaskDialog = ({ open, handleClose, task, onSave }) => {
   const [newCategory, setNewCategory] = useState('');
   const [isAddingCategory, setIsAddingCategory] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const API_URL = import.meta.env.VITE_APP_API_URL || 'https://taskmanager-tcy7.onrender.com';
+
   useEffect(() => {
     if (open && task) {
         setIsLoading(true);
@@ -43,7 +45,7 @@ const EditTaskDialog = ({ open, handleClose, task, onSave }) => {
   const fetchCategories = async () => {
     try {
       const token = sessionStorage.getItem('token');
-      const response = await axios.get(`${import.meta.env.VITE_APP_API_URL}/api/categories/`, {
+      const response = await axios.get(`${API_URL}/api/categories/`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -61,7 +63,7 @@ const EditTaskDialog = ({ open, handleClose, task, onSave }) => {
     try {
       const token = sessionStorage.getItem('token');
       const response = await axios.post(
-        `${import.meta.env.VITE_APP_API_URL}/api/categories/`,
+        `${API_URL}/api/categories/`,
         { name: newCategory }, // Adding the name field in the request body
         {
           headers: {

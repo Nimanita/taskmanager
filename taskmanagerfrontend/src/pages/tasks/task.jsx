@@ -51,6 +51,7 @@ export default function Task() {
 
     const uniqueCategories = ["all", ...new Set(tasks.map(task => task.category || "N/A"))];
     const uniqueStatuses = ["all", ...new Set(tasks.map(task => task.status))];
+    const API_URL = import.meta.env.VITE_APP_API_URL || 'https://taskmanager-tcy7.onrender.com';
 
    
 
@@ -72,7 +73,7 @@ export default function Task() {
     const fetchTasks = async () => {
         try {
           const token = sessionStorage.getItem('token'); // Retrieve the token from session storage
-          const response = await axios.get(`${import.meta.env.VITE_APP_API_URL}/api/tasks/`, {
+          const response = await axios.get(`${API_URL}/api/tasks/`, {
             headers: {
               Authorization: `Bearer ${token}` // Include the token in the authorization header
             }
@@ -100,7 +101,7 @@ export default function Task() {
         try {
             const token = sessionStorage.getItem('token');
             const response = await axios.put(
-              `${import.meta.env.VITE_APP_API_URL}/api/tasks/`,
+              `${API_URL}/api/tasks/`,
               { ...editedTask }, // Adding the name field in the request body
               {
                 headers: {
@@ -124,7 +125,7 @@ export default function Task() {
           const token = sessionStorage.getItem('token');
           console.log(token, task);
           const response = await axios.delete(
-            `${import.meta.env.VITE_APP_API_URL}/api/tasks/${task._id}`, // Include the task ID in the URL
+            `${API_URL}/api/tasks/${task._id}`, // Include the task ID in the URL
             {
               headers: {
                 Authorization: `Bearer ${token}`
