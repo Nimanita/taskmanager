@@ -8,7 +8,7 @@ const categoryRoutes = require('./routes/categories');
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(cors({ origin: process.env.FRONTEND_URL }));
 const connectDB = require('./config/database');
 connectDB();
 // Routes
