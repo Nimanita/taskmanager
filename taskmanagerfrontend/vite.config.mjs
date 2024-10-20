@@ -6,9 +6,10 @@ import jsconfigPaths from 'vite-jsconfig-paths';
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
+  console.log("viete", env.VITE_APP_API_URL)
   return {
     plugins: [react(), jsconfigPaths()],
-    base: '/', // Changed from '/free' to '/' for root path
+    base: '/',
     define: {
       global: 'window'
     },
@@ -27,13 +28,35 @@ export default defineConfig(({ mode }) => {
     server: {
       open: true,
       port: 3000,
+      proxy: {
+        '/api': {
+          target: env.VITE_APP_API_URL || 'https://taskmanager-abcd7.onrender.com',
+          changeOrigin: true,
+          secure: false,
+          rewrite: (path) => path.replace(/^\/api/, '')
+        }
+      }
     },
     preview: {
       open: true,
-      port: 3000
+      port: 3000,
+      proxy: {
+        '/api': {
+          target: env.VITE_APP_API_URL || 'https://taskmanager-abcd7.onrender.com',
+          changeOrigin: true,
+          secure: false,
+          rewrite: (path) => path.replace(/^\/api/, '')
+        }
+      }
     },
     build: {
-      outDir: 'build', // Specify the output directory for the production build
+      outDir: 'build',
+      rollupOptions: {
+        output: {
+          manualChunks: undefined
+        }
+      },
+      sourcemap: env.GENERATE_SOURCEMAP === 'true',
     }
   }
 });
