@@ -7,7 +7,8 @@ import { Card, IconButton } from '@mui/material';
 import MainCard from 'components/MainCard';
 import React, { useEffect, useState } from "react";
 import { TableSortLabel } from "@mui/material";
-import {
+import { 
+  
   Table,
   TableBody,
   TableCell,
@@ -19,7 +20,12 @@ import {
   TextField,
   CircularProgress,
   Grid,
-  Box
+  Box,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  
 } from "@mui/material";
 import axios from "axios";
 import ViewTaskDialog from './ViewTaskDialog';
@@ -39,6 +45,14 @@ export default function Task() {
     const [editDialogOpen, setEditDialogOpen] = useState(false);
     const [selectedTask, setSelectedTask] = useState(null);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+    const [categoryFilter, setCategoryFilter] = useState("all");
+    const [statusFilter, setStatusFilter] = useState("all");
+
+    const uniqueCategories = ["all", ...new Set(tasks.map(task => task.category || "N/A"))];
+    const uniqueStatuses = ["all", ...new Set(tasks.map(task => task.status))];
+
+   
 
     const sortTasks = (tasks) => {
         return tasks.sort((a, b) => {
@@ -139,19 +153,38 @@ export default function Task() {
       setPage(0);
     };
   
-    const filteredTasks = sortTasks(tasks.filter((task) =>
-    task.name.toLowerCase().includes(search.toLowerCase()) ||
-    task.description.toLowerCase().includes(search.toLowerCase()) ||
-    task.status.toLowerCase().includes(search.toLowerCase()) ||
-    new Date(task.dueDate).toLocaleDateString().includes(search.toLowerCase()) ||
-    (task.category || "N/A").toLowerCase().includes(search.toLowerCase())
-    ));
+    const filteredTasks = sortTasks(tasks.filter((task) => {
+      const matchesSearch = 
+          task.name.toLowerCase().includes(search.toLowerCase()) ||
+          task.description.toLowerCase().includes(search.toLowerCase()) ||
+          task.status.toLowerCase().includes(search.toLowerCase()) ||
+          new Date(task.dueDate).toLocaleDateString().includes(search.toLowerCase()) ||
+          (task.category || "N/A").toLowerCase().includes(search.toLowerCase());
+
+      const matchesCategory = categoryFilter === "all" || (task.category || "N/A") === categoryFilter;
+      const matchesStatus = statusFilter === "all" || task.status === statusFilter;
+
+      return matchesSearch && matchesCategory && matchesStatus;
+  }));
+
+  // Keep all your existing handlers...
+  // Just add these new handlers for filters:
+  const handleCategoryFilterChange = (event) => {
+      setCategoryFilter(event.target.value);
+      setPage(0);
+  };
+
+  const handleStatusFilterChange = (event) => {
+      setStatusFilter(event.target.value);
+      setPage(0);
+  };
+
 
       
   
     return (
         <Box sx={{ padding: 2 }} >
-          <Grid container spacing={3} sx={{ overflowX: 'auto' }}>
+          <Grid container spacing={3} sx={{ overflowX: 'auto' , mb:3 }}>
             <Grid item xs={12} md={4} lg={3}>
               <TextField
                 label="Search"
@@ -162,6 +195,39 @@ export default function Task() {
                 sx={{ mb: 2 }}
               />
             </Grid>
+            <Grid item xs={12} md={3}>
+                    <FormControl fullWidth>
+                        <InputLabel>Category Filter</InputLabel>
+                        <Select
+                            value={categoryFilter}
+                            label="Category Filter"
+                            onChange={handleCategoryFilterChange}
+                        >
+                            {uniqueCategories.map(category => (
+                                <MenuItem key={category} value={category}>
+                                    {category}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </Grid>
+                <Grid item xs={12} md={3}>
+                    <FormControl fullWidth>
+                        <InputLabel>Status Filter</InputLabel>
+                        <Select
+                            value={statusFilter}
+                            label="Status Filter"
+                            onChange={handleStatusFilterChange}
+                        >
+                            {uniqueStatuses.map(status => (
+                                <MenuItem key={status} value={status}>
+                                    {status}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </Grid>
+            
             <Grid item xs={12} sx={{ overflowX: 'auto' }}>
               {loading ? (
                 <CircularProgress style={{ margin: "20px auto", display: "block" }} />
