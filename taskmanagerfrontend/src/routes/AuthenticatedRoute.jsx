@@ -7,7 +7,7 @@ const AuthenticatedRoute = ({ children }) => {
 
   // If authenticated, prevent access to login/register routes
   if (isAuthenticated) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/tasks" replace />;
   }
 
   return <>{children}</>; // Render children if not authenticated

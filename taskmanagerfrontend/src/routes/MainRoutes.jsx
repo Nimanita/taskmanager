@@ -4,11 +4,7 @@ import { lazy } from 'react';
 import Loadable from 'components/Loadable';
 import Dashboard from 'layout/Dashboard';
 
-const Color = Loadable(lazy(() => import('pages/component-overview/color')));
-const Typography = Loadable(lazy(() => import('pages/component-overview/typography')));
-const Shadow = Loadable(lazy(() => import('pages/component-overview/shadows')));
-const DashboardDefault = Loadable(lazy(() => import('pages/dashboard/index')));
-
+const About = Loadable(lazy(() => import('pages/about/About')));
 // render - sample page
 const Task = Loadable(lazy(() => import('pages/tasks/task')));
 // ==============================|| MAIN ROUTING ||============================== //
@@ -19,18 +15,14 @@ const MainRoutes = {
   children: [
     {
       path: '/',
-      element: <DashboardDefault />
-    },
-    {
-      path: 'color',
-      element: <Color />
+      element: <Task />
     },
     {
       path: 'dashboard',
       children: [
         {
           path: 'default',
-          element: <DashboardDefault />
+          element: <Task />
         }
       ]
     },
@@ -39,12 +31,8 @@ const MainRoutes = {
       element: <Task/>
     },
     {
-      path: 'shadow',
-      element: <Shadow />
-    },
-    {
-      path: 'typography',
-      element: <Typography />
+      path: 'about',
+      element: <About/>
     }
   ]
 };
