@@ -43,7 +43,7 @@ const EditTaskDialog = ({ open, handleClose, task, onSave }) => {
   const fetchCategories = async () => {
     try {
       const token = sessionStorage.getItem('token');
-      const response = await axios.get("http://localhost:5000/api/categories/", {
+      const response = await axios.get(`${import.meta.env.VITE_APP_API_URL}/api/categories/`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -61,7 +61,7 @@ const EditTaskDialog = ({ open, handleClose, task, onSave }) => {
     try {
       const token = sessionStorage.getItem('token');
       const response = await axios.post(
-        "http://localhost:5000/api/categories/",
+        `${import.meta.env.VITE_APP_API_URL}/api/categories/`,
         { name: newCategory }, // Adding the name field in the request body
         {
           headers: {

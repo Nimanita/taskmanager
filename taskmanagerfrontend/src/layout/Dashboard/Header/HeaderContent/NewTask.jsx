@@ -39,7 +39,7 @@ export default function NewTask() {
   const fetchCategories = async () => {
     try {
       const token = sessionStorage.getItem('token');
-      const response = await axios.get("http://localhost:5000/api/categories/", {
+      const response = await axios.get(`${import.meta.env.VITE_APP_API_URL}/api/categories/`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -55,7 +55,7 @@ export default function NewTask() {
     try {
       const token = sessionStorage.getItem('token');
       await axios.post(
-        "http://localhost:5000/api/categories/",
+        `${import.meta.env.VITE_APP_API_URL}/api/categories/`,
         { name: newCategory },
         {
           headers: {
@@ -89,7 +89,7 @@ export default function NewTask() {
     try {
         const token = sessionStorage.getItem('token');
         const response = await axios.post(
-          "http://localhost:5000/api/tasks/",
+          "api/tasks/",
           { ...task }, // Adding the name field in the request body
           {
             headers: {

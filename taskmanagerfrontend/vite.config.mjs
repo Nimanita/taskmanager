@@ -1,46 +1,39 @@
 // https://github.com/vitejs/vite/discussions/3448
 import path from 'path';
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import jsconfigPaths from 'vite-jsconfig-paths';
 
-// ----------------------------------------------------------------------
-
-export default defineConfig({
-  plugins: [react(), jsconfigPaths()],
-  // https://github.com/jpuri/react-draft-wysiwyg/issues/1317
-  base: '/free', // accessing env variable is not possible here. So hard coding this.
-  define: {
-    global: 'window'
-  },
-  resolve: {
-    alias: [
-      {
-        find: /^~(.+)/,
-        replacement: path.join(process.cwd(), 'node_modules/$1')
-      },
-      {
-        find: /^src(.+)/,
-        replacement: path.join(process.cwd(), 'src/$1')
-      }
-    ]
-  },
-  server: {
-    // this ensures that the browser opens upon server start
-    open: true,
-    // this sets a default port to 3000
-    port: 3000,
-    proxy: {
-      '/api': {
-        target: 'http://localhost:5000',
-        changeOrigin: true,
-      },
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '');
+  return {
+    plugins: [react(), jsconfigPaths()],
+    base: '/', // Changed from '/free' to '/' for root path
+    define: {
+      global: 'window'
     },
-  },
-  preview: {
-    // this ensures that the browser opens upon preview start
-    open: true,
-    // this sets a default port to 3000
-    port: 3000
+    resolve: {
+      alias: [
+        {
+          find: /^~(.+)/,
+          replacement: path.join(process.cwd(), 'node_modules/$1')
+        },
+        {
+          find: /^src(.+)/,
+          replacement: path.join(process.cwd(), 'src/$1')
+        }
+      ]
+    },
+    server: {
+      open: true,
+      port: 3000,
+    },
+    preview: {
+      open: true,
+      port: 3000
+    },
+    build: {
+      outDir: 'build', // Specify the output directory for the production build
+    }
   }
 });

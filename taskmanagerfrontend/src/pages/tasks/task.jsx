@@ -72,7 +72,7 @@ export default function Task() {
     const fetchTasks = async () => {
         try {
           const token = sessionStorage.getItem('token'); // Retrieve the token from session storage
-          const response = await axios.get("http://localhost:5000/api/tasks/", {
+          const response = await axios.get(`${import.meta.env.VITE_APP_API_URL}/api/tasks/`, {
             headers: {
               Authorization: `Bearer ${token}` // Include the token in the authorization header
             }
@@ -100,7 +100,7 @@ export default function Task() {
         try {
             const token = sessionStorage.getItem('token');
             const response = await axios.put(
-              "http://localhost:5000/api/tasks/",
+              `${import.meta.env.VITE_APP_API_URL}/api/tasks/`,
               { ...editedTask }, // Adding the name field in the request body
               {
                 headers: {
@@ -124,7 +124,7 @@ export default function Task() {
           const token = sessionStorage.getItem('token');
           console.log(token, task);
           const response = await axios.delete(
-            `http://localhost:5000/api/tasks/${task._id}`, // Include the task ID in the URL
+            `${import.meta.env.VITE_APP_API_URL}/api/tasks/${task._id}`, // Include the task ID in the URL
             {
               headers: {
                 Authorization: `Bearer ${token}`
