@@ -14,6 +14,8 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import { useNavigate } from 'react-router-dom';
+import axios from "axios";
 
 // third party
 import * as Yup from 'yup';
@@ -45,6 +47,30 @@ export default function AuthRegister() {
     setLevel(strengthColor(temp));
   };
 
+  const navigate = useNavigate();
+  const handleSubmit = async (values, { setSubmitting, setErrors }) => {
+    console.log("inside login" , values)
+    try {
+      const response = await axios.post('http://localhost:5000/api/auth/signup', {
+        username: values.firstname,
+        email : values.email,
+        password: values.password,
+      });
+      console.log("response", response)
+      const { token } = response.data;
+      sessionStorage.setItem('token', token); 
+      
+      navigate('/login', { replace: true });
+      // Store token in session storage
+      // Optionally, redirect or handle successful login here
+    } catch (error) {
+      console.log(error)
+      setErrors({ submit: error.response?.data.message || 'Failed to Signup' });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   useEffect(() => {
     changePassword('');
   }, []);
@@ -54,9 +80,9 @@ export default function AuthRegister() {
       <Formik
         initialValues={{
           firstname: '',
-          lastname: '',
+         
           email: '',
-          company: '',
+       
           password: '',
           submit: null
         }}
@@ -65,6 +91,7 @@ export default function AuthRegister() {
           email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
           password: Yup.string().max(255).required('Password is required')
         })}
+        onSubmit={handleSubmit}
       >
         {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
           <form noValidate onSubmit={handleSubmit}>

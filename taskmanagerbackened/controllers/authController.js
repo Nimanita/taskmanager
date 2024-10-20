@@ -3,13 +3,20 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const signup = async (req, res) => {
-  const { username, password } = req.body;
+  const { username, password , email } = req.body;
   try {
-    const user = new User({ username, password });
+    const user = new User({ username, password , email});
     await user.save();
     res.status(201).json({ message: 'User created successfully' });
   } catch (error) {
-    res.status(400).json({ message: 'Error creating user', error });
+    console.log(error)
+    if (error.code === 11000) {
+      // Duplicate username or email
+      const field = Object.keys(error.keyValue)[0]; // Get the field that caused the duplicate error
+      const message = `${field.charAt(0).toUpperCase() + field.slice(1)} already exists.`;
+      return res.status(400).json({ message , error });
+    }
+    res.status(400).json({ message: 'Signup Failed', error });
   }
 };
 

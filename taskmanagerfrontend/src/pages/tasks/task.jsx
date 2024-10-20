@@ -1,0 +1,247 @@
+import Typography from '@mui/material/Typography';
+
+// project import
+import { EditFilled, EyeFilled , DeleteFilled, DeleteColumnOutlined } from '@ant-design/icons';
+import { Card, IconButton } from '@mui/material';
+
+import MainCard from 'components/MainCard';
+import React, { useEffect, useState } from "react";
+import { TableSortLabel } from "@mui/material";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  TablePagination,
+  TextField,
+  CircularProgress,
+  Grid,
+  Box
+} from "@mui/material";
+import axios from "axios";
+import ViewTaskDialog from './ViewTaskDialog';
+import EditTaskDialog from './EditTaskDialog';
+// ==============================|| SAMPLE PAGE ||============================== //
+
+export default function Task() {
+    const [tasks, setTasks] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [search, setSearch] = useState("");
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [sortDirection, setSortDirection] = useState('asc'); // or 'desc'
+    const [sortColumn, setSortColumn] = useState('dueDate');
+    const [viewDialogOpen, setViewDialogOpen] = useState(false);
+    const [editDialogOpen, setEditDialogOpen] = useState(false);
+    const [selectedTask, setSelectedTask] = useState(null);
+
+    const sortTasks = (tasks) => {
+        return tasks.sort((a, b) => {
+          const aValue = a[sortColumn] instanceof Date ? a[sortColumn] : a[sortColumn].toLowerCase();
+          const bValue = b[sortColumn] instanceof Date ? b[sortColumn] : b[sortColumn].toLowerCase();
+          
+          if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
+          if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
+          return 0;
+        });
+      };
+
+    useEffect(() => {
+      fetchTasks();
+    }, []);
+  
+    const fetchTasks = async () => {
+        try {
+          const token = sessionStorage.getItem('token'); // Retrieve the token from session storage
+          const response = await axios.get("http://localhost:5000/api/tasks/", {
+            headers: {
+              Authorization: `Bearer ${token}` // Include the token in the authorization header
+            }
+          });
+          console.log(response)
+          setTasks(response.data);
+          setLoading(false);
+        } catch (error) {
+          console.error("Error fetching tasks:", error);
+          setLoading(false);
+        }
+      };
+      
+      const handleViewTask = (task) => {
+        setSelectedTask(task);
+        setViewDialogOpen(true);
+      };
+      
+      const handleEditTask = (task) => {
+        setSelectedTask(task);
+        setEditDialogOpen(true);
+      };
+      
+      const handleSaveTask = async (editedTask) => {
+        try {
+            const token = sessionStorage.getItem('token');
+            const response = await axios.put(
+              "http://localhost:5000/api/tasks/",
+              { ...editedTask }, // Adding the name field in the request body
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`
+                }
+              }
+            );
+            console.log("updatetask" , response)
+          } catch (error) {
+            console.error('Error fetching categories:', error);
+          }
+      };
+
+    const handleSearchChange = (event) => {
+      setSearch(event.target.value);
+    };
+  
+    const handleChangePage = (event, newPage) => {
+      setPage(newPage);
+    };
+  
+    const handleChangeRowsPerPage = (event) => {
+      setRowsPerPage(parseInt(event.target.value, 10));
+      setPage(0);
+    };
+  
+    const filteredTasks = sortTasks(tasks.filter((task) =>
+    task.name.toLowerCase().includes(search.toLowerCase()) ||
+    task.description.toLowerCase().includes(search.toLowerCase()) ||
+    task.status.toLowerCase().includes(search.toLowerCase()) ||
+    new Date(task.dueDate).toLocaleDateString().includes(search.toLowerCase()) ||
+    (task.category || "N/A").toLowerCase().includes(search.toLowerCase())
+    ));
+
+      
+  
+    return (
+        <Box sx={{ padding: 2 }}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={4} lg={3}>
+              <TextField
+                label="Search"
+                variant="outlined"
+                value={search}
+                onChange={handleSearchChange}
+                fullWidth
+                sx={{ mb: 2 }}
+              />
+            </Grid>
+            <Grid item xs={12} sx={{ overflowX: 'auto' }}>
+              {loading ? (
+                <CircularProgress style={{ margin: "20px auto", display: "block" }} />
+              ) : (
+                <Box >
+                  <TableContainer>
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>
+                            <TableSortLabel
+                              active={sortColumn === 'name'}
+                              direction={sortColumn === 'name' ? sortDirection : 'asc'}
+                              onClick={() => { setSortColumn('name'); setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc'); }}
+                            >
+                              Name
+                            </TableSortLabel>
+                          </TableCell>
+                          <TableCell>Description</TableCell>
+                          <TableCell>
+                            <TableSortLabel
+                              active={sortColumn === 'status'}
+                              direction={sortColumn === 'status' ? sortDirection : 'asc'}
+                              onClick={() => { setSortColumn('status'); setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc'); }}
+                            >
+                              Status
+                            </TableSortLabel>
+                          </TableCell>
+                          <TableCell>
+                            <TableSortLabel
+                              active={sortColumn === 'dueDate'}
+                              direction={sortColumn === 'dueDate' ? sortDirection : 'asc'}
+                              onClick={() => { setSortColumn('dueDate'); setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc'); }}
+                            >
+                              Due Date
+                            </TableSortLabel>
+                          </TableCell>
+                          <TableCell>
+                            <TableSortLabel
+                              active={sortColumn === 'category'}
+                              direction={sortColumn === 'category' ? sortDirection : 'asc'}
+                              onClick={() => { setSortColumn('category'); setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc'); }}
+                            >
+                              Category
+                            </TableSortLabel>
+                          </TableCell>
+                          <TableCell>Actions</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {filteredTasks
+                          .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                          .map((task) => (
+                            <TableRow key={task._id}>
+                              <TableCell style={{maxWidth : '100px'}}>
+                                <Typography fullWidth style={{overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>{task.name}</Typography>
+                              </TableCell>
+                              <TableCell style={{maxWidth : '100px'}}>
+                                <Typography  fullWidth style={{overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>{task.description}</Typography>
+                              </TableCell>
+                              <TableCell>
+                                <Typography noWrap>{task.status}</Typography>
+                              </TableCell>
+                              <TableCell>
+                                <Typography noWrap>{new Date(task.dueDate).toLocaleDateString()}</Typography>
+                              </TableCell>
+                              <TableCell style={{maxWidth : '100px'}}>
+                                <Typography fullWidth style={{overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>{task.category || "N/A"}</Typography>
+                              </TableCell>
+                              <TableCell>
+                            <IconButton onClick={() => handleViewTask(task)}>
+                                <EyeFilled />
+                            </IconButton>
+                            <IconButton onClick={() => handleEditTask(task)}>
+                                <EditFilled />
+                            </IconButton>
+                            <IconButton onClick={() => handleEditTask(task)}>
+                                <DeleteFilled />
+                            </IconButton>
+                            </TableCell>
+                            </TableRow>
+                          ))}
+                      </TableBody>
+                    </Table>
+                    <TablePagination
+                      component="div"
+                      count={filteredTasks.length}
+                      page={page}
+                      onPageChange={handleChangePage}
+                      rowsPerPage={rowsPerPage}
+                      onRowsPerPageChange={handleChangeRowsPerPage}
+                    />
+                  </TableContainer>
+                  <ViewTaskDialog 
+                    open={viewDialogOpen} 
+                    handleClose={() => setViewDialogOpen(false)} 
+                    task={selectedTask} 
+                    />
+                    <EditTaskDialog 
+                    open={editDialogOpen} 
+                    handleClose={() => setEditDialogOpen(false)} 
+                    task={selectedTask}
+                    onSave={handleSaveTask}
+                    />
+                </Box>
+              )}
+            </Grid>
+          </Grid>
+        </Box>
+      );
+    }

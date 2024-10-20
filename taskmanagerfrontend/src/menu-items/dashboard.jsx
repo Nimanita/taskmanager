@@ -20,6 +20,14 @@ const dashboard = {
       url: '/dashboard/default',
       icon: icons.DashboardOutlined,
       breadcrumbs: false
+    },
+    {
+      id: 'task',
+      title: 'Task',
+      type: 'item',
+      url: '/tasks',
+      icon: icons.DashboardOutlined,
+      breadcrumbs: false
     }
   ]
 };

@@ -35,13 +35,14 @@ const createTask = async (req, res) => {
   };
   
   const updateTask = async (req, res) => {
-    const { id , category , status} = req.body;
+    const { _id , category , status} = req.body;
+    console.log(req.body , _id , category , status)
     try {
       const validStatuses = ['pending', 'in-progress', 'completed'];
       const taskStatus = validStatuses.includes(status) ? status : 'pending';
       req.body["status"] = taskStatus
 
-      const taskExists = await Task.findById(id);
+      const taskExists = await Task.findById(_id);
       if (!taskExists) {
         return res.status(404).json({ message: 'Task not found' });
       }
@@ -53,7 +54,7 @@ const createTask = async (req, res) => {
           }
   
         } 
-      const task = await Task.findOneAndUpdate({ _id: id, user: req.user._id }, req.body, { new: true });
+      const task = await Task.findOneAndUpdate({ _id: _id, user: req.user._id }, req.body, { new: true });
       res.json(task);
     } catch (error) {
       res.status(400).json({ message: 'Error updating task', error });
@@ -61,13 +62,13 @@ const createTask = async (req, res) => {
   };
   
   const deleteTask = async (req, res) => {
-    const { id } = req.body;
+    const { _id } = req.body;
     try {
-      const taskExists = await Task.findById(id);
+      const taskExists = await Task.findById(_id);
       if (!taskExists) {
         return res.status(404).json({ message: 'Task not found' });
       }
-      await Task.findOneAndDelete({ _id: id, user: req.user._id });
+      await Task.findOneAndDelete({ _id: _id, user: req.user._id });
       res.json({ message: 'Task deleted' });
     } catch (error) {
       res.status(400).json({ message: 'Error deleting task', error });
