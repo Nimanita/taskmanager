@@ -11,7 +11,8 @@ app.use(express.json());
 app.use(cors({ origin: process.env.FRONTEND_URL }));
 const connectDB = require('./config/database');
 connectDB();
-// Routes
+console.log("url" , process.env.FRONTEND_URL)
+// Routes"url
 app.use('/api/auth', authRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/categories', categoryRoutes);

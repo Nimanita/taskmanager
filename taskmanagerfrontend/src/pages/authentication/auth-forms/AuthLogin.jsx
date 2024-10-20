@@ -47,7 +47,10 @@ export default function AuthLogin({ isDemo = false }) {
   const dispatch = useDispatch()
   const navigate = useNavigate();
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
-    console.log("inside login" , values)
+     
+  console.log('API URL:', import.meta.env.VITE_APP_API_URL);
+  console.log('Base Name:', import.meta.env.VITE_APP_BASE_NAME);
+    console.log("inside login" , values , import.meta.env.VITE_APP_API_URL)
     try {
       const response = await axios.post(`${import.meta.env.VITE_APP_API_URL}/api/auth/login`, {
         username: values.email,
