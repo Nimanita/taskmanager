@@ -6,6 +6,6 @@ const router = express.Router();
 router.post('/', authMiddleware, createTask);
 router.get('/', authMiddleware, getTasks);
 router.put('/', authMiddleware, updateTask);
-router.delete('/', authMiddleware, deleteTask);
+router.delete('/:id', authMiddleware, deleteTask);
 
 module.exports = router;

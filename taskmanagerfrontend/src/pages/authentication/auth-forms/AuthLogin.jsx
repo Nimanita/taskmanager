@@ -62,7 +62,7 @@ export default function AuthLogin({ isDemo = false }) {
         operation : "login"
       }
       dispatch(Operations(ddata));
-      navigate('/dashboard', { replace: true });
+      navigate('/tasks', { replace: true });
       // Store token in session storage
       // Optionally, redirect or handle successful login here
     } catch (error) {

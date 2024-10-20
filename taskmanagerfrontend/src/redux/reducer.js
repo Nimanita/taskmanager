@@ -4,7 +4,7 @@ const LOGOUT = 'LOGOUT';
 
 const initialState = {
     username: sessionStorage.getItem("username") || '',
-    email: sessionStorage.getItem("email") || '',
+    email: sessionStorage.getItem("email") || 'abc@gmail.com',
     authenticated: sessionStorage.getItem("isAuthenticated") || false
 };
 

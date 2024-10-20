@@ -24,6 +24,7 @@ import {
 import axios from "axios";
 import ViewTaskDialog from './ViewTaskDialog';
 import EditTaskDialog from './EditTaskDialog';
+import DeleteTaskDialog from './DeleteTaskDialog';
 // ==============================|| SAMPLE PAGE ||============================== //
 
 export default function Task() {
@@ -37,6 +38,7 @@ export default function Task() {
     const [viewDialogOpen, setViewDialogOpen] = useState(false);
     const [editDialogOpen, setEditDialogOpen] = useState(false);
     const [selectedTask, setSelectedTask] = useState(null);
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
     const sortTasks = (tasks) => {
         return tasks.sort((a, b) => {
@@ -98,6 +100,32 @@ export default function Task() {
           }
       };
 
+      const handleDeleteClick = (task) => {
+        setSelectedTask(task);
+        setDeleteDialogOpen(true);
+      };
+      
+      const handleConfirmDelete = async (task) => {
+        try {
+          const token = sessionStorage.getItem('token');
+          console.log(token, task);
+          const response = await axios.delete(
+            `http://localhost:5000/api/tasks/${task._id}`, // Include the task ID in the URL
+            {
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            }
+          );
+          console.log(response);
+          // Refresh the tasks list
+          fetchTasks();
+          setDeleteDialogOpen(false);
+        } catch (error) {
+          console.error("Error deleting task:", error);
+        }
+      };
+
     const handleSearchChange = (event) => {
       setSearch(event.target.value);
     };
@@ -122,8 +150,8 @@ export default function Task() {
       
   
     return (
-        <Box sx={{ padding: 2 }}>
-          <Grid container spacing={3}>
+        <Box sx={{ padding: 2 }} >
+          <Grid container spacing={3} sx={{ overflowX: 'auto' }}>
             <Grid item xs={12} md={4} lg={3}>
               <TextField
                 label="Search"
@@ -210,7 +238,7 @@ export default function Task() {
                             <IconButton onClick={() => handleEditTask(task)}>
                                 <EditFilled />
                             </IconButton>
-                            <IconButton onClick={() => handleEditTask(task)}>
+                            <IconButton onClick={() => handleDeleteClick(task)}>
                                 <DeleteFilled />
                             </IconButton>
                             </TableCell>
@@ -237,6 +265,13 @@ export default function Task() {
                     handleClose={() => setEditDialogOpen(false)} 
                     task={selectedTask}
                     onSave={handleSaveTask}
+                    />
+                      <DeleteTaskDialog 
+                      open={deleteDialogOpen}
+                      handleClose={() => setDeleteDialogOpen(false)}
+                      handleConfirmDelete={handleConfirmDelete}
+                      task={selectedTask}
+                      taskName={selectedTask?.name || ''}
                     />
                 </Box>
               )}

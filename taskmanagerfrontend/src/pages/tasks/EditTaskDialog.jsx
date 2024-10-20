@@ -117,13 +117,13 @@ const EditTaskDialog = ({ open, handleClose, task, onSave }) => {
       maxWidth="sm" 
       fullWidth
     >
-      <DialogTitle>
+      <DialogTitle >
         Edit Task
     
       </DialogTitle>
       <DialogContent>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
+        <Grid container spacing={2} pt={1}>
+          <Grid item xs={12} >
             <TextField
               fullWidth
               label="Name"
