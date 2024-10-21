@@ -90,7 +90,7 @@ export default function NewTask() {
     try {
         const token = sessionStorage.getItem('token');
         const response = await axios.post(
-          "api/tasks/",
+          `${API_URL}/api/tasks/`,
           { ...task }, // Adding the name field in the request body
           {
             headers: {
