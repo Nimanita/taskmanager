@@ -207,6 +207,11 @@ export default function AuthRegister() {
                   </Button>
                 </AnimateButton>
               </Grid>
+              <Grid item xs={12}>
+                <Typography>
+                If you are unable to log in, register, or receive any response, please wait at least 1 minute as the backend is deployed on Render and may temporarily go down due to inactivity.
+                </Typography>
+              </Grid>
             </Grid>
           </form>
         )}
