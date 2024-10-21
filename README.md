@@ -25,38 +25,48 @@ A comprehensive task management application built with React, Redux, Node.js, Ex
 ## Installation
 1. Clone the repository:
    ```
-   git clone https://github.com/yourusername/task-management-app.git
-   cd task-management-app
+   git clone https://github.com/Nimanita/taskmanager.git
+   cd taskmanager
    ```
 2. Install dependencies for both frontend and backend:
    ```
    # Install backend dependencies
-   cd backend
+   cd taskmanagerbackened
    npm install
 
    # Install frontend dependencies
-   cd ../frontend
+   cd taskmanagerfrontend
    npm install
    ```
 3. Set up environment variables:
-   - Create a `.env` file in the `backend` directory
+   - Create a `.env` file in the `taskmanagerbackened` directory
    - Add the following variables:
      ```
      PORT=5000
      MONGODB_URI=your_mongodb_connection_string
      JWT_SECRET=your_jwt_secret
+     FRONTEND_URL=your_frontend_url  
      ```
-4. Start the backend server:
+4. Set up environment variables:
+   - Create a `.env` file in the `taskmanagerfrontend` directory
+   - Add the following variables:
+     ```
+     VITE_APP_VERSION=v1.3.0
+     GENERATE_SOURCEMAP=false
+     VITE_APP_BASE_NAME=/
+     VITE_APP_API_URL=https://localhost:5000
+     ```
+5. Start the backend server:
    ```
-   cd backend
+   cd taskmanagerbackened
+   node app.js
+   ```
+6. Start the frontend development server:
+   ```
+   cd taskmanagerfrontend
    npm start
    ```
-5. Start the frontend development server:
-   ```
-   cd frontend
-   npm start
-   ```
-6. Open your browser and navigate to `http://localhost:3000` to access the application.
+7. Open your browser and navigate to `http://localhost:3000` to access the application.If it is not running on port 3000 than access it wherever it is running
 
    
 ## API Endpoints
@@ -82,9 +92,6 @@ A comprehensive task management application built with React, Redux, Node.js, Ex
 ## Future Improvements
 
 - Implement unit tests using Jest or Mocha
-- Add email notifications for upcoming task due dates
-- Implement task sharing between users
-- Create mobile apps using React Native
 
 ## Contributing
 
