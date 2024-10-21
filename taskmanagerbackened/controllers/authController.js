@@ -5,7 +5,13 @@ require('dotenv').config();
 const signup = async (req, res) => {
   const { username, password , email } = req.body;
   try {
-    const user = new User({ username, password , email});
+    const lowercaseUsername = username.toLowerCase();
+    
+    const user = new User({ 
+      username: lowercaseUsername, 
+      password, 
+      email
+    });
     await user.save();
     res.status(201).json({ message: 'User created successfully' });
   } catch (error) {
@@ -24,7 +30,7 @@ const login = async (req, res) => {
   const { username, password } = req.body;
   try {
     console.log(username , password)
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ username: username.toLowerCase() });
     if (!user || !(await user.comparePassword(password))) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
